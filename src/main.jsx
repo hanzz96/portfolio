@@ -1,17 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowUpRight,
   Briefcase,
+  ChevronLeft,
+  ChevronRight,
   Code2,
   Download,
+  Images,
   Mail,
   MapPin,
   Sparkles,
   TerminalSquare,
-  Gamepad2
+  Gamepad2,
+  X,
 } from "lucide-react";
 import "./styles.css";
+
+const asset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 
 const projects = [
   {
@@ -73,18 +79,34 @@ const experience = [
     role: "Senior Backend Engineer",
     period: "Oct 2024 - Dec 2025",
     text: "Developed backend features to support GMV growth, payment reliability, system performance, and maintainability across commerce services.",
+    gallery: [
+      { src: asset("fore_coffee/e-receipt.jpg"), caption: "E-Receipt" },
+      { src: asset("fore_coffee/link-number.jpg"), caption: "Link Any Number" },
+      { src: asset("fore_coffee/payment-method.jpg"), caption: "Payment List" },
+      { src: asset("fore_coffee/progressive-promo.jpg"), caption: "Progressive Promo" },
+    ],
   },
   {
     company: "Platinum Ceramics Industry",
     role: "Senior System Specialist / Senior Fullstack Developer",
     period: "Jul 2021 - Jul 2024",
     text: "Built ERP modules, vendor portals, reusable frontend components, Kafka libraries, mobile API proxies, Redis-based stock safeguards, and approval workflows.",
+    gallery: [
+      { src: asset("platinum_ceramics/payment-ap.png"), caption: "Landing Page Module" },
+      { src: asset("platinum_ceramics/transaction-erp.png"), caption: "Transaction ERP Payment AP" },
+      { src: asset("platinum_ceramics/sql-report.png"), caption: "SQL Report Custom" },
+    ],
   },
   {
     company: "Dealjava",
     role: "Backend Developer",
     period: "Mar 2020 - Jun 2021",
     text: "Implemented e-commerce backend services, website ordering flows, BCA OneKlik integration, and third-party transaction logging for Diyo.",
+    gallery: [
+      { src: asset("diyo/checkout-page.png"), caption: "Checkout Page" },
+      { src: asset("diyo/order-detail.png"), caption: "Order Detail" },
+      { src: asset("diyo/store-product.png"), caption: "Store Product" },
+    ],
   },
   {
     company: "camLine Pte. Ltd.",
@@ -138,7 +160,57 @@ function PixelHero() {
   );
 }
 
+function GalleryModal({ company, gallery, index, onClose, onPrev, onNext }) {
+  useEffect(() => {
+    function handleKey(event) {
+      if (event.key === "Escape") onClose();
+      if (event.key === "ArrowLeft") onPrev();
+      if (event.key === "ArrowRight") onNext();
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onClose, onPrev, onNext]);
+
+  const item = gallery[index];
+
+  return (
+    <div className="gallery-overlay" onClick={onClose}>
+      <div className="gallery-modal" onClick={(event) => event.stopPropagation()}>
+        <div className="gallery-modal-head">
+          <span>{company}</span>
+          <button type="button" className="gallery-close" onClick={onClose} aria-label="Close gallery">
+            <X size={20} />
+          </button>
+        </div>
+        <div className="gallery-modal-body">
+          {gallery.length > 1 && (
+            <button type="button" className="gallery-nav prev" onClick={onPrev} aria-label="Previous image">
+              <ChevronLeft size={22} />
+            </button>
+          )}
+          <img src={item.src} alt={item.caption} />
+          {gallery.length > 1 && (
+            <button type="button" className="gallery-nav next" onClick={onNext} aria-label="Next image">
+              <ChevronRight size={22} />
+            </button>
+          )}
+        </div>
+        <div className="gallery-modal-foot">
+          <p>{item.caption}</p>
+          {gallery.length > 1 && (
+            <span>
+              {index + 1} / {gallery.length}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  const [gallery, setGallery] = useState(null);
+
   return (
     <main>
       <section className="hero">
@@ -166,7 +238,7 @@ function App() {
             <a className="button primary" href="#work">
               Start campaign <ArrowUpRight size={18} />
             </a>
-            <a className="button secondary" href="/resume-johan-andreas-pranoto.pdf">
+            <a className="button secondary" href={asset("resume-johan-andreas-pranoto-v1.pdf")}>
               <Download size={18} /> Download CV
             </a>
           </div>
@@ -240,7 +312,29 @@ function App() {
                 <h3>{item.company}</h3>
               </div>
               <div>
-                <strong>{item.role}</strong>
+                <div className="timeline-role">
+                  <strong>{item.role}</strong>
+                  {item.gallery && (
+                    <button
+                      type="button"
+                      className="gallery-trigger"
+                      onClick={() => setGallery({ company: item.company, items: item.gallery, index: 0 })}
+                      aria-label={`View ${item.company} portfolio screenshots`}
+                    >
+                      <span className="gallery-trigger-stack">
+                        {item.gallery.slice(0, 3).map((shot) => (
+                          <img key={shot.src} src={shot.src} alt="" aria-hidden="true" />
+                        ))}
+                      </span>
+                      <span className="gallery-trigger-label">
+                        <span className="gallery-trigger-title">
+                          <Images size={14} /> View portfolio
+                        </span>
+                        <span className="gallery-trigger-count">{item.gallery.length} screenshots</span>
+                      </span>
+                    </button>
+                  )}
+                </div>
                 <p>{item.text}</p>
               </div>
             </article>
@@ -288,6 +382,27 @@ function App() {
           </a>
         </div>
       </section>
+
+      {gallery && (
+        <GalleryModal
+          company={gallery.company}
+          gallery={gallery.items}
+          index={gallery.index}
+          onClose={() => setGallery(null)}
+          onPrev={() =>
+            setGallery((current) => ({
+              ...current,
+              index: (current.index - 1 + current.items.length) % current.items.length,
+            }))
+          }
+          onNext={() =>
+            setGallery((current) => ({
+              ...current,
+              index: (current.index + 1) % current.items.length,
+            }))
+          }
+        />
+      )}
     </main>
   );
 }
