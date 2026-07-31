@@ -54,13 +54,11 @@ main::before {
   inset: 0;
   z-index: 5;
   pointer-events: none;
-  background: repeating-linear-gradient(
-    180deg,
-    rgba(236, 255, 248, 0.032) 0,
-    rgba(236, 255, 248, 0.032) 1px,
-    transparent 1px,
-    transparent 5px
-  );
+  background: repeating-linear-gradient(180deg,
+      rgba(236, 255, 248, 0.032) 0,
+      rgba(236, 255, 248, 0.032) 1px,
+      transparent 1px,
+      transparent 5px);
   mix-blend-mode: screen;
   opacity: 0.45;
 }
@@ -461,7 +459,7 @@ h1 {
   box-shadow: 8px 8px 0 #000;
 }
 
-.hero-panel > div {
+.hero-panel>div {
   min-height: 88px;
   padding: 18px;
   display: flex;
@@ -513,7 +511,7 @@ h2 {
   letter-spacing: 0;
 }
 
-.intro > p {
+.intro>p {
   margin-bottom: 0;
   color: var(--muted);
   font-size: 1.1rem;
@@ -619,7 +617,7 @@ h2 {
   font-size: 1.6rem;
 }
 
-.project-body > span {
+.project-body>span {
   color: var(--muted);
   line-height: 1.7;
 }
@@ -659,7 +657,7 @@ h2 {
   background: #0a1722;
 }
 
-.timeline-item + .timeline-item {
+.timeline-item+.timeline-item {
   margin-top: 1px;
 }
 
@@ -1052,7 +1050,7 @@ h2 {
     font-size: clamp(2.25rem, 11.5vw, 3.45rem);
   }
 
-  .hero-panel > div {
+  .hero-panel>div {
     min-height: 76px;
   }
 
@@ -1202,6 +1200,7 @@ h2 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .scroll-progress-fill,
   .scroll-marker {
     transition: none;
