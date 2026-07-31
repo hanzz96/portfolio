@@ -1,6 +1,6 @@
 # Johan Andreas Pranoto Portfolio
 
-A recruiter-focused fullstack developer portfolio built with React and Vite, styled with a lightweight pixel-game UI.
+A fullstack developer portfolio built with React and Vite, styled with a lightweight pixel-game UI theme.
 
 ## Run Locally
 
