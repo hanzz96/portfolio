@@ -238,7 +238,7 @@ function App() {
             <a className="button primary" href="#work">
               Start campaign <ArrowUpRight size={18} />
             </a>
-            <a className="button secondary" href={asset("resume-johan-andreas-pranoto-v1.pdf")}>
+            <a className="button secondary" href={asset("resume-johan-andreas-pranoto-v2.pdf")}>
               <Download size={18} /> Download CV
             </a>
           </div>
