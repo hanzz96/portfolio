@@ -4,6 +4,10 @@ import { ScrollText } from "@lucide/vue";
 import GalleryModal from "../components/GalleryModal.vue";
 import GamePanel from "../components/GamePanel.vue";
 import { useGallery } from "../composables/useGallery.js";
+import { experience } from "../data/experience.js";
+import { links, profile } from "../data/profile.js";
+import { projects } from "../data/projects.js";
+import { stack } from "../data/stack.js";
 
 const emit = defineEmits(["switch-view"]);
 
@@ -62,6 +66,29 @@ function onOpenGallery(company, items) {
 <template>
   <div class="game-view">
     <div ref="host" class="game-host" role="img" aria-label="Interactive 2D town. Each building opens a section of the portfolio." />
+
+    <!-- Text version of the portfolio for screen readers and search engines; the canvas has no text. -->
+    <div class="sr-only">
+      <h1>{{ profile.name }}, Fullstack Developer</h1>
+      <p>{{ profile.introText }}</p>
+      <h2>Projects</h2>
+      <ul>
+        <li v-for="project in projects" :key="project.title">{{ project.title }}: {{ project.text }}</li>
+      </ul>
+      <h2>Experience</h2>
+      <ul>
+        <li v-for="item in experience" :key="item.company">
+          {{ item.company }}, {{ item.role }} ({{ item.period }}): {{ item.text }}
+        </li>
+      </ul>
+      <h2>Skills</h2>
+      <p>{{ stack.join(", ") }}</p>
+      <h2>Contact</h2>
+      <p>
+        <a :href="`mailto:${links.email}`">{{ links.email }}</a>,
+        <a :href="links.github">GitHub</a>, <a :href="links.linkedin">LinkedIn</a>
+      </p>
+    </div>
 
     <p :class="['game-help', { 'is-hidden': !showHelp }]" aria-live="polite">{{ helpText }}</p>
 
