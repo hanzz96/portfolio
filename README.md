@@ -45,4 +45,5 @@ Tilesets are [Tiny Town](https://kenney.nl/assets/tiny-town) and
 [Tiny Dungeon](https://kenney.nl/assets/tiny-dungeon) by [Kenney](https://kenney.nl), released under
 CC0. Sound effects come from Kenney's [Interface Sounds](https://kenney.nl/assets/interface-sounds) and
 [RPG Audio](https://kenney.nl/assets/rpg-audio) (CC0, converted to WAV). Their licenses are kept in
-`public/game/`.
+`public/game/`. Technology icons are from [Simple Icons](https://simpleicons.org) (CC0); the logos remain
+trademarks of their respective owners.

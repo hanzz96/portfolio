@@ -94,7 +94,7 @@ function onOpenGallery(company, items) {
         </li>
       </ul>
       <h2>Skills</h2>
-      <p>{{ stack.join(", ") }}</p>
+      <p>{{ stack.map((item) => item.name).join(", ") }}</p>
       <h2>Contact</h2>
       <p>
         <a :href="`mailto:${links.email}`">{{ links.email }}</a>,

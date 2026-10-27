@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { Briefcase, Code2, Download, Images, Mail, MapPin, X } from "@lucide/vue";
+import TechIcon from "./TechIcon.vue";
 import { experience } from "../data/experience.js";
 import { links, loadout, profile } from "../data/profile.js";
 import { projects } from "../data/projects.js";
@@ -123,7 +124,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
             </li>
           </ol>
           <div class="stack-list">
-            <span v-for="item in stack" :key="item">{{ item }}</span>
+            <span v-for="item in stack" :key="item.name"><TechIcon :icon="item.icon" /> {{ item.name }}</span>
           </div>
         </template>
 

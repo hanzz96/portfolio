@@ -11,6 +11,7 @@
   "dependencies": {
     "@lucide/vue": "^1.28.0",
     "kaplay": "^3001.0.19",
+    "simple-icons": "^16.36.0",
     "vue": "^3.5.40"
   },
   "devDependencies": {
