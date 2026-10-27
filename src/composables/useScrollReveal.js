@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { onMounted, onUnmounted } from "vue";
 
 export function useScrollReveal() {
-  useEffect(() => {
+  let observer;
+
+  onMounted(() => {
     const elements = document.querySelectorAll("[data-reveal]");
 
     if (!("IntersectionObserver" in window)) {
@@ -9,7 +11,7 @@ export function useScrollReveal() {
       return;
     }
 
-    const observer = new IntersectionObserver(
+    observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -22,6 +24,7 @@ export function useScrollReveal() {
     );
 
     elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+  });
+
+  onUnmounted(() => observer?.disconnect());
 }
