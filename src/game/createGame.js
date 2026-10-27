@@ -3,6 +3,8 @@ import { findPath } from "./pathfinding.js";
 import { HEROES, TILE, canStand, createWorld, isBlocked, poiAt } from "./world.js";
 
 const SPEED = 64; // pixels per second
+const STRIDE = 14; // pixels walked per footstep sound
+const SFX = ["step-1", "step-2", "step-3", "tap", "open", "close"];
 const SHEET = { sliceX: 12, sliceY: 11 };
 const KEYS = {
   left: ["left", "a"],
@@ -34,6 +36,29 @@ export function createGame({ root, baseUrl, onOpen }) {
   k.loadSprite("town", `${baseUrl}game/kenney-tiny-town/tilemap_packed.png`, SHEET);
   k.loadSprite("heroes", `${baseUrl}game/kenney-tiny-dungeon/tilemap_packed.png`, SHEET);
 
+  for (const name of SFX) k.loadSound(name, `${baseUrl}game/audio/sfx/${name}.wav`);
+
+  // Music streams from a plain audio element so its 1+ MB only downloads once sound is turned on.
+  let music = null;
+  const getMusic = () => {
+    if (!music) {
+      music = new Audio(`${baseUrl}game/audio/town-theme.mp3`);
+      music.loop = true;
+      music.volume = 0.3;
+    }
+    return music;
+  };
+
+  let muted = true;
+  const syncMusic = () => {
+    if (muted || document.hidden) music?.pause();
+    else getMusic().play().catch(() => {}); // blocked until the visitor interacts
+  };
+  const sound = (name, options) => {
+    if (!muted) k.play(name, options);
+  };
+  document.addEventListener("visibilitychange", syncMusic);
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let paused = false;
   let handleTap = null;
@@ -41,6 +66,7 @@ export function createGame({ root, baseUrl, onOpen }) {
   // Read the pointer straight from the DOM event: one path for mouse, touch and pen.
   canvas.addEventListener("pointerdown", (event) => {
     if (event.button > 0) return;
+    if (!muted && (!music || music.paused)) syncMusic();
     const rect = canvas.getBoundingClientRect();
     handleTap?.(
       k.vec2(((event.clientX - rect.left) * k.width()) / rect.width, ((event.clientY - rect.top) * k.height()) / rect.height)
@@ -87,6 +113,7 @@ export function createGame({ root, baseUrl, onOpen }) {
     let pending = null;
     let markerLife = 0;
     let clock = 0;
+    let stride = 0;
     let zoom = 2;
     const camera = k.vec2(position);
 
@@ -100,6 +127,7 @@ export function createGame({ root, baseUrl, onOpen }) {
       path = [];
       pending = null;
       paused = true;
+      sound("open", { volume: 0.5 });
       onOpen(poi.id);
     }
 
@@ -119,6 +147,7 @@ export function createGame({ root, baseUrl, onOpen }) {
       const poi = poiAt(world, col, row);
       const goal = poi ? poi.entry : { col, row };
 
+      sound("tap", { volume: 0.4 });
       pending = poi ?? null;
       path = findPath(grid, tileOf(), goal);
       marker.pos = k.vec2(center(goal.col), center(goal.row));
@@ -138,6 +167,8 @@ export function createGame({ root, baseUrl, onOpen }) {
     k.onUpdate(() => {
       const dt = Math.min(k.dt(), 0.05);
       clock += dt;
+      const fromX = position.x;
+      const fromY = position.y;
       let moving = false;
       let facing = 0;
 
@@ -179,6 +210,12 @@ export function createGame({ root, baseUrl, onOpen }) {
       if (facing) player.flipX = facing < 0;
       const bob = moving && !reduceMotion ? Math.abs(Math.sin(clock * 14)) * 1.5 : 0;
       player.pos = k.vec2(position.x, position.y - bob);
+
+      stride += Math.hypot(position.x - fromX, position.y - fromY);
+      if (stride >= STRIDE) {
+        stride = 0;
+        sound(`step-${1 + Math.floor(Math.random() * 3)}`, { volume: 0.3, speed: 0.9 + Math.random() * 0.2 });
+      }
       shadowObject.pos = k.vec2(position.x, position.y + 6);
 
       const poiHere = !paused && !moving ? entryPoiHere() : undefined;
@@ -205,10 +242,24 @@ export function createGame({ root, baseUrl, onOpen }) {
 
   return {
     setPaused(value) {
+      const wasPaused = paused;
       paused = value;
-      if (!value) canvas.focus({ preventScroll: true });
+      if (!value) {
+        canvas.focus({ preventScroll: true });
+        if (wasPaused) sound("close", { volume: 0.5 });
+      }
+    },
+    setMuted(value) {
+      muted = value;
+      syncMusic();
     },
     destroy() {
+      document.removeEventListener("visibilitychange", syncMusic);
+      if (music) {
+        music.pause();
+        music.removeAttribute("src");
+        music.load();
+      }
       k.quit();
       canvas.remove();
     },

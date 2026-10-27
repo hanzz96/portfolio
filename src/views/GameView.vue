@@ -1,9 +1,10 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { ScrollText } from "@lucide/vue";
+import { ScrollText, Volume2, VolumeX } from "@lucide/vue";
 import GalleryModal from "../components/GalleryModal.vue";
 import GamePanel from "../components/GamePanel.vue";
 import { useGallery } from "../composables/useGallery.js";
+import { loadMuted, saveMuted } from "../game/preferences.js";
 import { experience } from "../data/experience.js";
 import { links, profile } from "../data/profile.js";
 import { projects } from "../data/projects.js";
@@ -14,6 +15,7 @@ const emit = defineEmits(["switch-view"]);
 const host = ref(null);
 const activePanel = ref(null);
 const showHelp = ref(true);
+const muted = ref(loadMuted());
 const { gallery, open: openGallery, close: closeGallery, prev, next } = useGallery();
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
@@ -40,6 +42,7 @@ onMounted(async () => {
         activePanel.value = id;
       },
     });
+    game.setMuted(muted.value);
   } catch (error) {
     console.error("Game failed to start, falling back to the classic view.", error);
     emit("switch-view", "classic");
@@ -52,6 +55,12 @@ onBeforeUnmount(() => {
   document.documentElement.classList.remove("game-active");
   game?.destroy();
 });
+
+function toggleSound() {
+  muted.value = !muted.value;
+  saveMuted(muted.value);
+  game?.setMuted(muted.value);
+}
 
 function closePanel() {
   activePanel.value = null;
@@ -91,6 +100,17 @@ function onOpenGallery(company, items) {
     </div>
 
     <p :class="['game-help', { 'is-hidden': !showHelp }]" aria-live="polite">{{ helpText }}</p>
+
+    <button
+      type="button"
+      class="view-switch sound-toggle"
+      :aria-pressed="!muted"
+      :aria-label="muted ? 'Turn sound on' : 'Turn sound off'"
+      @click="toggleSound"
+    >
+      <component :is="muted ? VolumeX : Volume2" :size="18" />
+      <span>{{ muted ? "Sound off" : "Sound on" }}</span>
+    </button>
 
     <button type="button" class="view-switch" @click="emit('switch-view', 'classic')">
       <ScrollText :size="18" /> Classic view

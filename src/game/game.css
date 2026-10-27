@@ -87,6 +87,11 @@ html.game-active body {
   transform: translate(-2px, -2px);
 }
 
+.sound-toggle {
+  right: auto;
+  left: 16px;
+}
+
 .gp-backdrop {
   position: fixed;
   inset: 0;

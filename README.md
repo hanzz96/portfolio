@@ -13,6 +13,7 @@ The original scrolling page is still available at `?view=classic` (or the **Clas
 | WASD / arrow keys | Walk. |
 | E / Enter / Space | Open the section at the door you are standing on. |
 | Esc | Close the open panel. |
+| Sound button | Footsteps, UI sounds and music. Off by default; the choice is remembered. |
 
 ## Run Locally
 
@@ -42,4 +43,6 @@ npm run build
 
 Tilesets are [Tiny Town](https://kenney.nl/assets/tiny-town) and
 [Tiny Dungeon](https://kenney.nl/assets/tiny-dungeon) by [Kenney](https://kenney.nl), released under
-CC0. Their licenses are kept in `public/game/`.
+CC0. Sound effects come from Kenney's [Interface Sounds](https://kenney.nl/assets/interface-sounds) and
+[RPG Audio](https://kenney.nl/assets/rpg-audio) (CC0, converted to WAV). Their licenses are kept in
+`public/game/`.
