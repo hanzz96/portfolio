@@ -30,7 +30,7 @@ html.game-active body {
   top: 0;
   left: 0;
   color: var(--gold);
-  font-size: 0.75rem;
+  font-size: 1.05rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.05em;
@@ -46,7 +46,7 @@ html.game-active body {
 
 .game-hint {
   color: var(--ink);
-  font-size: 0.65rem;
+  font-size: 0.85rem;
   transition: opacity 120ms;
 }
 
@@ -84,7 +84,7 @@ html.game-active body {
   background: var(--hud-bg);
   box-shadow: 3px 3px 0 var(--hud-edge);
   color: var(--hud-edge);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 800;
   text-align: center;
   pointer-events: none;
@@ -117,7 +117,7 @@ html.game-active body {
   color: var(--hud-edge);
   box-shadow: 3px 3px 0 var(--hud-edge);
   font: inherit;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
