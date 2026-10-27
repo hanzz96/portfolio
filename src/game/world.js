@@ -111,7 +111,7 @@ export function createWorld() {
   }
 
   // Points of interest.
-  const labelAt = (col, row, width) => ({ x: (col + width / 2) * TILE, y: row * TILE - 5 });
+  const labelAt = (col, row, width) => ({ x: (col + width / 2) * TILE, y: row * TILE - 1 });
 
   pois.push({
     id: "about",

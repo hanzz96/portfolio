@@ -30,7 +30,7 @@ html.game-active body {
   top: 0;
   left: 0;
   color: var(--gold);
-  font-size: 1.05rem;
+  font-size: var(--label-size, 22px);
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.05em;
@@ -46,7 +46,7 @@ html.game-active body {
 
 .game-hint {
   color: var(--ink);
-  font-size: 0.85rem;
+  font-size: 1rem;
   transition: opacity 120ms;
 }
 

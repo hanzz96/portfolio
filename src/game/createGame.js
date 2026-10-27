@@ -116,9 +116,9 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
     };
     const labels = world.pois.map(({ label, labelAnchor }) => ({ element: makeLabel("game-label", label), ...labelAnchor }));
     const hintElement = makeLabel("game-label game-hint", window.matchMedia("(pointer: coarse)").matches ? "Tap" : "E / Tap");
-    const place = (element, worldX, worldY) => {
+    const place = (element, worldX, worldY, anchorY = "-50%") => {
       const { x, y } = k.toScreen(k.vec2(worldX, worldY));
-      element.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+      element.style.transform = `translate(${x}px, ${y}px) translate(-50%, ${anchorY})`;
     };
 
     const position = k.vec2(center(world.spawn.col), center(world.spawn.row));
@@ -161,6 +161,7 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
       const shortSide = Math.min(k.width(), k.height());
       zoom = Math.max(2, Math.min(6, Math.round(shortSide / (TILE * 16))));
       k.setCamScale(zoom, zoom);
+      overlay.style.setProperty("--label-size", `${Math.max(22, zoom * 9)}px`);
     }
     fit();
     k.onResize(fit);
@@ -258,7 +259,7 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
       camera.y += (targetY - camera.y) * follow;
       k.setCamPos(camera.x, camera.y);
 
-      for (const { element, x, y } of labels) place(element, x, y);
+      for (const { element, x, y } of labels) place(element, x, y, "-100%");
     });
   });
 
