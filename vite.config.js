@@ -1,9 +1,9 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
-const base = "/portfolio-v2/";
+const base = "/portfolio/";
 
-// GitHub Pages already redirects /portfolio-v2 to /portfolio-v2/; do the same for dev and preview.
+// GitHub Pages already redirects /portfolio to /portfolio/; do the same for dev and preview.
 const redirectBaseWithoutSlash = {
   name: "redirect-base-without-slash",
   configureServer: addRedirect,
