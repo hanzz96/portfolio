@@ -145,7 +145,7 @@ export function createWorld() {
     label: "Projects",
     cells: [{ col: 21, row: 14 }],
     entry: { col: 21, row: 15 },
-    labelAnchor: labelAt(21, 13, 1),
+    labelAnchor: labelAt(21, 14, 1),
   });
 
   blocked[6][14] = true;
