@@ -7,7 +7,7 @@ A fullstack developer portfolio built with React and Vite, styled with a lightwe
 ```bash
 node version used 24.^
 npm install
-npm dev
+npm run dev
 ```
 
 Then open the local URL shown by Vite.
@@ -15,5 +15,5 @@ Then open the local URL shown by Vite.
 ## Build
 
 ```bash
-npm build
+npm run build
 ```
