@@ -13,6 +13,7 @@ import { stack } from "../data/stack.js";
 const emit = defineEmits(["switch-view"]);
 
 const host = ref(null);
+const overlay = ref(null);
 const activePanel = ref(null);
 const showHelp = ref(true);
 const muted = ref(loadMuted());
@@ -36,6 +37,7 @@ onMounted(async () => {
     if (disposed) return;
     game = createGame({
       root: host.value,
+      overlay: overlay.value,
       baseUrl: import.meta.env.BASE_URL,
       onOpen: (id) => {
         showHelp.value = false;
@@ -75,6 +77,7 @@ function onOpenGallery(company, items) {
 <template>
   <div class="game-view">
     <div ref="host" class="game-host" role="img" aria-label="Interactive 2D town. Each building opens a section of the portfolio." />
+    <div ref="overlay" class="game-overlay" aria-hidden="true" />
 
     <!-- Text version of the portfolio for screen readers and search engines; the canvas has no text. -->
     <div class="sr-only">

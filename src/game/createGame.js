@@ -15,7 +15,7 @@ const KEYS = {
 
 const center = (index) => (index + 0.5) * TILE;
 
-export function createGame({ root, baseUrl, onOpen }) {
+export function createGame({ root, overlay, baseUrl, onOpen }) {
   const canvas = document.createElement("canvas");
   canvas.className = "game-canvas";
   canvas.tabIndex = 0;
@@ -30,7 +30,6 @@ export function createGame({ root, baseUrl, onOpen }) {
     pixelDensity: Math.min(window.devicePixelRatio || 1, 2),
     touchToMouse: true,
     debug: false,
-    font: "monospace",
   });
 
   k.loadSprite("town", `${baseUrl}game/kenney-tiny-town/tilemap_packed.png`, SHEET);
@@ -89,11 +88,20 @@ export function createGame({ root, baseUrl, onOpen }) {
       k.add([k.sprite("heroes", { frame }), k.pos(center(col), center(row)), k.anchor("center"), k.z(5)])
     );
 
-    world.pois.forEach(({ label, labelAnchor: { x, y } }) => {
-      const text = label.toUpperCase();
-      k.add([k.text(text, { size: 6 }), k.pos(x + 0.5, y + 0.5), k.anchor("center"), k.color(0, 0, 0), k.z(19)]);
-      k.add([k.text(text, { size: 6 }), k.pos(x, y), k.anchor("center"), k.color(255, 209, 102), k.z(20)]);
-    });
+    // Labels are DOM, not canvas text: Kaplay's built-in font atlas breaks when the game is re-created.
+    const makeLabel = (className, text) => {
+      const element = document.createElement("span");
+      element.className = className;
+      element.textContent = text;
+      overlay.appendChild(element);
+      return element;
+    };
+    const labels = world.pois.map(({ label, labelAnchor }) => ({ element: makeLabel("game-label", label), ...labelAnchor }));
+    const hintElement = makeLabel("game-label game-hint", window.matchMedia("(pointer: coarse)").matches ? "Tap" : "E / Tap");
+    const place = (element, worldX, worldY) => {
+      const { x, y } = k.toScreen(k.vec2(worldX, worldY));
+      element.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+    };
 
     const position = k.vec2(center(world.spawn.col), center(world.spawn.row));
     const player = k.add([k.sprite("heroes", { frame: HEROES.player }), k.pos(position), k.anchor("center"), k.z(10)]);
@@ -106,7 +114,6 @@ export function createGame({ root, baseUrl, onOpen }) {
       k.opacity(0.3),
       k.z(9),
     ]);
-    const hint = k.add([k.text("E / TAP", { size: 5 }), k.pos(position), k.anchor("center"), k.opacity(0), k.z(30)]);
     const marker = k.add([k.circle(3), k.pos(0, 0), k.anchor("center"), k.color(255, 209, 102), k.opacity(0), k.z(8)]);
 
     let path = [];
@@ -219,8 +226,8 @@ export function createGame({ root, baseUrl, onOpen }) {
       shadowObject.pos = k.vec2(position.x, position.y + 6);
 
       const poiHere = !paused && !moving ? entryPoiHere() : undefined;
-      hint.opacity = poiHere ? 1 : 0;
-      hint.pos = k.vec2(position.x, position.y + 14);
+      hintElement.style.opacity = poiHere ? "1" : "0";
+      place(hintElement, position.x, position.y + 14);
 
       markerLife = Math.max(0, markerLife - dt);
       marker.opacity = markerLife > 0 ? markerLife * 1.6 : 0;
@@ -234,6 +241,8 @@ export function createGame({ root, baseUrl, onOpen }) {
       camera.x += (targetX - camera.x) * follow;
       camera.y += (targetY - camera.y) * follow;
       k.setCamPos(camera.x, camera.y);
+
+      for (const { element, x, y } of labels) place(element, x, y);
     });
   });
 
@@ -261,6 +270,7 @@ export function createGame({ root, baseUrl, onOpen }) {
         music.load();
       }
       k.quit();
+      overlay.replaceChildren();
       canvas.remove();
     },
   };

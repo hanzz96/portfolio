@@ -18,6 +18,38 @@ html.game-active body {
   inset: 0;
 }
 
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.game-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow:
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.game-hint {
+  color: var(--ink);
+  font-size: 0.65rem;
+  transition: opacity 120ms;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
