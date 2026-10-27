@@ -43,6 +43,12 @@ a {
   text-decoration: none;
 }
 
+/* The page opts into pixelated rendering for the pixel-art look, but screenshots are photos:
+   scaling them with nearest-neighbour makes text look rough and blurry. */
+img {
+  image-rendering: auto;
+}
+
 main {
   position: relative;
   overflow: hidden;
