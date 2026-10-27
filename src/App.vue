@@ -1,57 +1,32 @@
 <script setup>
-import { ref } from "vue";
+import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from "vue";
 import "./styles.css";
-import { useScrollReveal } from "./composables/useScrollReveal.js";
-import QuestProgress from "./components/QuestProgress.vue";
-import GalleryModal from "./components/GalleryModal.vue";
-import Hero from "./sections/Hero.vue";
-import Intro from "./sections/Intro.vue";
-import Work from "./sections/Work.vue";
-import Timeline from "./sections/Timeline.vue";
-import Process from "./sections/Process.vue";
-import Contact from "./sections/Contact.vue";
+import "./game/game.css";
+import ClassicView from "./views/ClassicView.vue";
 
-useScrollReveal();
+const GameView = defineAsyncComponent(() => import("./views/GameView.vue"));
 
-const gallery = ref(null);
+// The classic page uses #hash anchors, so the view lives in the query string instead.
+const readView = () => (new URLSearchParams(window.location.search).get("view") === "classic" ? "classic" : "game");
+const view = ref(readView());
 
-function openGallery(company, items) {
-  gallery.value = { company, items, index: 0 };
+function setView(next) {
+  if (next === view.value) return;
+  const url = next === "classic" ? `${window.location.pathname}?view=classic` : window.location.pathname;
+  window.history.pushState({}, "", url);
+  view.value = next;
+  window.scrollTo(0, 0);
 }
 
-function closeGallery() {
-  gallery.value = null;
+function syncFromUrl() {
+  view.value = readView();
 }
 
-function prevImage() {
-  const { items, index } = gallery.value;
-  gallery.value = { ...gallery.value, index: (index - 1 + items.length) % items.length };
-}
-
-function nextImage() {
-  const { items, index } = gallery.value;
-  gallery.value = { ...gallery.value, index: (index + 1) % items.length };
-}
+onMounted(() => window.addEventListener("popstate", syncFromUrl));
+onBeforeUnmount(() => window.removeEventListener("popstate", syncFromUrl));
 </script>
 
 <template>
-  <main>
-    <QuestProgress />
-    <Hero />
-    <Intro />
-    <Work />
-    <Timeline @open-gallery="openGallery" />
-    <Process />
-    <Contact />
-
-    <GalleryModal
-      v-if="gallery"
-      :company="gallery.company"
-      :gallery="gallery.items"
-      :index="gallery.index"
-      @close="closeGallery"
-      @prev="prevImage"
-      @next="nextImage"
-    />
-  </main>
+  <ClassicView v-if="view === 'classic'" @play="setView('game')" />
+  <GameView v-else @switch-view="setView" />
 </template>

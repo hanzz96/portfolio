@@ -1,6 +1,7 @@
 <script setup>
 import { ArrowUpRight, Download, Gamepad2, MapPin, Sparkles } from "@lucide/vue";
 import PixelHero from "../components/PixelHero.vue";
+import { links, profile } from "../data/profile.js";
 import { asset } from "../lib/asset.js";
 </script>
 
@@ -19,7 +20,7 @@ import { asset } from "../lib/asset.js";
 
     <div class="hero-copy" id="top">
       <p class="eyebrow"><Sparkles :size="16" /> Player class: Fullstack Developer • 5+ years XP</p>
-      <h1>Johan Andreas Pranoto</h1>
+      <h1>{{ profile.name }}</h1>
       <p class="hero-text">
         I am a fullstack developer from Surabaya with strong backend experience in commerce, ERP, payments,
         microservices, reporting, and real-time integrations.
@@ -28,7 +29,7 @@ import { asset } from "../lib/asset.js";
         <a class="button primary" href="#work">
           Start campaign <ArrowUpRight :size="18" />
         </a>
-        <a class="button secondary" :href="asset('resume-johan-andreas-pranoto-v2.pdf')">
+        <a class="button secondary" :href="asset(links.resume)">
           <Download :size="18" /> Download CV
         </a>
       </div>
@@ -37,11 +38,11 @@ import { asset } from "../lib/asset.js";
     <div class="hero-panel">
       <div>
         <span>Focus</span>
-        <strong>Fullstack Engineering with a focus on Backend, Payments, ERP, and Scalable Systems</strong>
+        <strong>{{ profile.focus }}</strong>
       </div>
       <div>
         <span>Spawn point</span>
-        <strong><MapPin :size="16" /> Surabaya, East Java, Indonesia</strong>
+        <strong><MapPin :size="16" /> {{ profile.location }}</strong>
       </div>
       <div class="drag-note">
         <Gamepad2 :size="17" />

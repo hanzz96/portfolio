@@ -1,5 +1,6 @@
 <script setup>
 import { TerminalSquare } from "@lucide/vue";
+import { loadout } from "../data/profile.js";
 import { stack } from "../data/stack.js";
 </script>
 
@@ -11,17 +12,9 @@ import { stack } from "../data/stack.js";
         <span>developer-loadout.ts</span>
       </div>
       <ol>
-        <li>
-          <strong>01</strong>
-          <span>Backend strength: APIs, payment gateways, ERP workflows, reporting, Redis safeguards, Kafka messaging, and SQL performance.</span>
-        </li>
-        <li>
-          <strong>02</strong>
-          <span>Fullstack delivery: React, Vue, Nuxt, Laravel, Node.js, reusable components, vendor portals, and production-ready admin tools.</span>
-        </li>
-        <li>
-          <strong>03</strong>
-          <span>Creative edge: Game Engine learning, strong interest in game-inspired interfaces, game mechanics implementation, and animated UI interfaces for website.</span>
+        <li v-for="(item, index) in loadout" :key="item">
+          <strong>{{ String(index + 1).padStart(2, "0") }}</strong>
+          <span>{{ item }}</span>
         </li>
       </ol>
     </div>

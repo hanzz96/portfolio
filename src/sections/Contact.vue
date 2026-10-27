@@ -1,5 +1,6 @@
 <script setup>
 import { Briefcase, Code2, Mail } from "@lucide/vue";
+import { links } from "../data/profile.js";
 </script>
 
 <template>
@@ -9,13 +10,13 @@ import { Briefcase, Code2, Mail } from "@lucide/vue";
       <h2>Looking for a fullstack or backend developer who can carry production systems?</h2>
     </div>
     <div class="contact-actions" data-reveal>
-      <a class="button primary" href="mailto:johanandreas74@gmail.com">
-        <Mail :size="18" /> johanandreas74@gmail.com
+      <a class="button primary" :href="`mailto:${links.email}`">
+        <Mail :size="18" /> {{ links.email }}
       </a>
-      <a class="icon-link" href="https://github.com/hanzz96" aria-label="GitHub">
+      <a class="icon-link" :href="links.github" aria-label="GitHub">
         <Code2 :size="20" />
       </a>
-      <a class="icon-link" href="https://www.linkedin.com/in/johan-andreas-a08402132/" aria-label="LinkedIn">
+      <a class="icon-link" :href="links.linkedin" aria-label="LinkedIn">
         <Briefcase :size="20" />
       </a>
     </div>
