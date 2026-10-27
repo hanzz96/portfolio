@@ -1,5 +1,4 @@
 <script setup>
-import { Gamepad2 } from "@lucide/vue";
 import { useScrollReveal } from "../composables/useScrollReveal.js";
 import { useGallery } from "../composables/useGallery.js";
 import QuestProgress from "../components/QuestProgress.vue";
@@ -20,16 +19,12 @@ const { gallery, open, close, prev, next } = useGallery();
 <template>
   <main>
     <QuestProgress />
-    <Hero />
+    <Hero @play="emit('play')" />
     <Intro />
     <Work />
     <Timeline @open-gallery="open" />
     <Process />
     <Contact />
-
-    <button type="button" class="view-switch" @click="emit('play')">
-      <Gamepad2 :size="18" /> Play the game
-    </button>
 
     <GalleryModal
       v-if="gallery"

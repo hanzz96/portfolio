@@ -3,6 +3,8 @@ import { ArrowUpRight, Download, Gamepad2, MapPin, Sparkles } from "@lucide/vue"
 import PixelHero from "../components/PixelHero.vue";
 import { links, profile } from "../data/profile.js";
 import { asset } from "../lib/asset.js";
+
+const emit = defineEmits(["play"]);
 </script>
 
 <template>
@@ -15,6 +17,7 @@ import { asset } from "../lib/asset.js";
         <a href="#experience">Experience</a>
         <a href="#process">Skills</a>
         <a href="#contact">Contact</a>
+        <button type="button" class="nav-play" @click="emit('play')"><Gamepad2 :size="15" /> Play</button>
       </div>
     </nav>
 
@@ -32,6 +35,9 @@ import { asset } from "../lib/asset.js";
         <a class="button secondary" :href="asset(links.resume)">
           <Download :size="18" /> Download CV
         </a>
+        <button type="button" class="button accent" @click="emit('play')">
+          <Gamepad2 :size="18" /> Play my portfolio
+        </button>
       </div>
     </div>
 
