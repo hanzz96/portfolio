@@ -94,8 +94,8 @@ export function createWorld() {
 
   // Roads and plaza.
   fillDirt(4, 7, 23, 8);
-  fillDirt(5, 6, 6, 6);
-  fillDirt(21, 6, 22, 6);
+  fillDirt(5, 8, 5, 11);
+  fillDirt(21, 8, 21, 11);
   fillDirt(13, 6, 14, 6);
   fillDirt(10, 9, 17, 12);
   fillDirt(13, 13, 14, 14);
@@ -116,16 +116,16 @@ export function createWorld() {
   pois.push({
     id: "about",
     label: "About",
-    cells: addHouse(4, 3, { roof: "grey", wall: "brown" }),
-    entry: { col: 5, row: 6 },
-    labelAnchor: labelAt(4, 3, 3),
+    cells: addHouse(4, 8, { roof: "grey", wall: "brown" }),
+    entry: { col: 5, row: 11 },
+    labelAnchor: labelAt(4, 8, 3),
   });
   pois.push({
     id: "experience",
     label: "Experience",
-    cells: addHouse(20, 3, { roof: "red", wall: "grey" }),
-    entry: { col: 21, row: 6 },
-    labelAnchor: labelAt(20, 3, 3),
+    cells: addHouse(20, 8, { roof: "red", wall: "grey" }),
+    entry: { col: 21, row: 11 },
+    labelAnchor: labelAt(20, 8, 3),
   });
   pois.push({
     id: "skills",
