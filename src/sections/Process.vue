@@ -1,5 +1,6 @@
 <script setup>
 import { TerminalSquare } from "@lucide/vue";
+import TechIcon from "../components/TechIcon.vue";
 import { loadout } from "../data/profile.js";
 import { stack } from "../data/stack.js";
 </script>
@@ -22,7 +23,7 @@ import { stack } from "../data/stack.js";
       <p class="section-kicker">Skill loadout</p>
       <h2>Modern web stack with serious backend damage.</h2>
       <div class="stack-list">
-        <span v-for="item in stack" :key="item">{{ item }}</span>
+        <span v-for="item in stack" :key="item.name"><TechIcon :icon="item.icon" /> {{ item.name }}</span>
       </div>
     </div>
   </section>

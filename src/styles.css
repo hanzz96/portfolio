@@ -674,6 +674,22 @@ h2 {
   box-shadow: 4px 4px 0 #000;
 }
 
+.stack-list span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tech-icon {
+  flex: none;
+  color: var(--soft);
+  transition: color 120ms steps(2);
+}
+
+.stack-list span:hover .tech-icon {
+  color: var(--brand, var(--gold));
+}
+
 .timeline {
   padding-top: 0;
 }
