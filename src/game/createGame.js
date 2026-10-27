@@ -1,4 +1,5 @@
 import kaplay from "kaplay";
+import { createHeldKeys } from "./input.js";
 import { findPath } from "./pathfinding.js";
 import { HEROES, TILE, canStand, createWorld, isBlocked, poiAt } from "./world.js";
 
@@ -6,13 +7,6 @@ const SPEED = 64; // pixels per second
 const STRIDE = 14; // pixels walked per footstep sound
 const SFX = ["step-1", "step-2", "step-3", "tap", "open", "close"];
 const SHEET = { sliceX: 12, sliceY: 11 };
-const KEYS = {
-  left: ["left", "a"],
-  right: ["right", "d"],
-  up: ["up", "w"],
-  down: ["down", "s"],
-};
-
 const center = (index) => (index + 0.5) * TILE;
 
 export function createGame({ root, overlay, baseUrl, onOpen }) {
@@ -57,6 +51,22 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
     if (!muted) k.play(name, options);
   };
   document.addEventListener("visibilitychange", syncMusic);
+
+  // Movement keys come from window events, not Kaplay (which only hears the canvas), and are cleared
+  // whenever focus could move away, so a key released inside a panel can never stay stuck down.
+  const keys = createHeldKeys();
+  const onKeyDown = (event) => {
+    if (!paused && !event.metaKey && !event.ctrlKey && !event.altKey) keys.press(event.code);
+  };
+  const onKeyUp = (event) => keys.release(event.code);
+  const releaseAllKeys = () => keys.clear();
+  const onVisibility = () => {
+    if (document.hidden) keys.clear();
+  };
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
+  window.addEventListener("blur", releaseAllKeys);
+  document.addEventListener("visibilitychange", onVisibility);
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let paused = false;
@@ -134,6 +144,7 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
       path = [];
       pending = null;
       paused = true;
+      keys.clear();
       sound("open", { volume: 0.5 });
       onOpen(poi.id);
     }
@@ -169,8 +180,6 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
       if (poi) open(poi);
     });
 
-    const held = (names) => names.some((name) => k.isKeyDown(name));
-
     k.onUpdate(() => {
       const dt = Math.min(k.dt(), 0.05);
       clock += dt;
@@ -180,8 +189,7 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
       let facing = 0;
 
       if (!paused) {
-        const dx = (held(KEYS.right) ? 1 : 0) - (held(KEYS.left) ? 1 : 0);
-        const dy = (held(KEYS.down) ? 1 : 0) - (held(KEYS.up) ? 1 : 0);
+        const { dx, dy } = keys.direction();
 
         if (dx || dy) {
           path = [];
@@ -253,6 +261,7 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
     setPaused(value) {
       const wasPaused = paused;
       paused = value;
+      keys.clear();
       if (!value) {
         canvas.focus({ preventScroll: true });
         if (wasPaused) sound("close", { volume: 0.5 });
@@ -264,6 +273,10 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
     },
     destroy() {
       document.removeEventListener("visibilitychange", syncMusic);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      window.removeEventListener("blur", releaseAllKeys);
       if (music) {
         music.pause();
         music.removeAttribute("src");
