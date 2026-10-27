@@ -1,6 +1,7 @@
 import kaplay from "kaplay";
 import { createHeldKeys } from "./input.js";
 import { findPath } from "./pathfinding.js";
+import { armUnlock } from "./unlock.js";
 import { HEROES, TILE, canStand, createWorld, isBlocked, poiAt } from "./world.js";
 
 const SPEED = 64; // pixels per second
@@ -52,6 +53,14 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
   };
   document.addEventListener("visibilitychange", syncMusic);
 
+  // Browsers keep audio locked until the visitor interacts. Unlock on the first interaction of any kind
+  // (key, tap, click anywhere), so a saved "sound on" choice starts the music instead of staying silent.
+  const resumeAudio = () => k.audioCtx.resume().catch(() => {});
+  const disarmUnlock = armUnlock(window, () => {
+    resumeAudio();
+    if (!muted) syncMusic();
+  });
+
   // Movement keys come from window events, not Kaplay (which only hears the canvas), and are cleared
   // whenever focus could move away, so a key released inside a panel can never stay stuck down.
   const keys = createHeldKeys();
@@ -75,7 +84,6 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
   // Read the pointer straight from the DOM event: one path for mouse, touch and pen.
   canvas.addEventListener("pointerdown", (event) => {
     if (event.button > 0) return;
-    if (!muted && (!music || music.paused)) syncMusic();
     const rect = canvas.getBoundingClientRect();
     handleTap?.(
       k.vec2(((event.clientX - rect.left) * k.width()) / rect.width, ((event.clientY - rect.top) * k.height()) / rect.height)
@@ -269,9 +277,11 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
     },
     setMuted(value) {
       muted = value;
+      if (!value) resumeAudio(); // called from the Sound button's click, so the browser allows it
       syncMusic();
     },
     destroy() {
+      disarmUnlock();
       document.removeEventListener("visibilitychange", syncMusic);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("keydown", onKeyDown);
