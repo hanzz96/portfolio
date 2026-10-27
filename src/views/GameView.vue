@@ -106,17 +106,18 @@ function onOpenGallery(company, items) {
 
     <button
       type="button"
-      class="view-switch sound-toggle"
+      class="hud-button hud-sound"
       :aria-pressed="!muted"
-      :aria-label="muted ? 'Turn sound on' : 'Turn sound off'"
+      :title="muted ? 'Turn sound on' : 'Turn sound off'"
       @click="toggleSound"
     >
-      <component :is="muted ? VolumeX : Volume2" :size="18" />
-      <span>{{ muted ? "Sound off" : "Sound on" }}</span>
+      <component :is="muted ? VolumeX : Volume2" :size="20" />
+      <span>Sound</span>
     </button>
 
-    <button type="button" class="view-switch" @click="emit('switch-view', 'classic')">
-      <ScrollText :size="18" /> Classic view
+    <button type="button" class="hud-button hud-classic" title="Switch to the classic page" @click="emit('switch-view', 'classic')">
+      <ScrollText :size="20" />
+      <span>Classic view</span>
     </button>
 
     <GamePanel v-if="activePanel" :id="activePanel" @close="closePanel" @open-gallery="onOpenGallery" />
