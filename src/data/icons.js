@@ -1,6 +1,7 @@
-import { Cloud, Coffee } from "@lucide/vue";
+import { Bot, Cloud, Coffee, Route } from "@lucide/vue";
 import {
   siApachekafka,
+  siClaude,
   siDart,
   siDocker,
   siJavascript,
@@ -40,10 +41,13 @@ export const brandIcons = {
   docker: siDocker,
   kafka: siApachekafka,
   unreal: siUnrealengine,
+  claude: siClaude,
 };
 
-// simple-icons has no Java or AWS Lambda logo, so those use a generic Lucide icon.
+// simple-icons has no logo for these (its "Hermes" is a different brand), so they use a generic Lucide icon.
 export const fallbackIcons = {
   java: { component: Coffee, hex: "ED8B00" },
   lambda: { component: Cloud, hex: "FF9900" },
+  hermes: { component: Bot, hex: "F2C94C" },
+  ninerouter: { component: Route, hex: "4ADE80" },
 };
