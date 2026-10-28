@@ -12,7 +12,7 @@ export const profile = {
 export const loadout = [
   "Backend strength: APIs, payment gateways, ERP workflows, reporting, Redis safeguards, Kafka messaging, and SQL performance.",
   "Fullstack delivery: React, Vue, Nuxt, Laravel, Node.js, reusable components, vendor portals, and production-ready admin tools.",
-  "Creative edge: Game Engine learning, strong interest in game-inspired interfaces, game mechanics implementation, and animated UI interfaces for website.",
+  "Creative edge: exploring the Unreal Engine 3D game engine and AI tools like Claude, plus game-inspired interfaces, game mechanics implementation, and animated UI for the web.",
 ];
 
 export const links = {

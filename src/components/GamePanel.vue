@@ -132,8 +132,8 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
           <h2>Looking for a fullstack or backend developer who can carry production systems?</h2>
           <div class="gp-actions">
             <a class="button primary" :href="`mailto:${links.email}`"><Mail :size="18" /> {{ links.email }}</a>
-            <a class="button secondary" :href="links.github"><Code2 :size="18" /> GitHub</a>
-            <a class="button secondary" :href="links.linkedin"><Briefcase :size="18" /> LinkedIn</a>
+            <a class="button secondary" :href="links.github" target="_blank" rel="noopener noreferrer"><Code2 :size="18" /> GitHub</a>
+            <a class="button secondary" :href="links.linkedin" target="_blank" rel="noopener noreferrer"><Briefcase :size="18" /> LinkedIn</a>
             <a class="button secondary" :href="asset(links.resume)"><Download :size="18" /> Download CV</a>
           </div>
         </template>
