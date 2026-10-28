@@ -13,10 +13,10 @@ import { links } from "../data/profile.js";
       <a class="button primary" :href="`mailto:${links.email}`">
         <Mail :size="18" /> {{ links.email }}
       </a>
-      <a class="icon-link" :href="links.github" aria-label="GitHub">
+      <a class="icon-link" :href="links.github" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
         <Code2 :size="20" />
       </a>
-      <a class="icon-link" :href="links.linkedin" aria-label="LinkedIn">
+      <a class="icon-link" :href="links.linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
         <Briefcase :size="20" />
       </a>
     </div>
