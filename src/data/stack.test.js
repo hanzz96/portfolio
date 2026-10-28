@@ -20,8 +20,12 @@ describe("stack data", () => {
     }
   });
 
+  it("lists the AI tools after the original items", () => {
+    expect(stack.slice(20).map((item) => item.name)).toEqual(["Claude", "Hermes Agent", "9router"]);
+  });
+
   it("keeps every item from the original list", () => {
-    expect(stack.map((item) => item.name)).toEqual([
+    expect(stack.slice(0, 20).map((item) => item.name)).toEqual([
       "JavaScript",
       "TypeScript",
       "PHP",

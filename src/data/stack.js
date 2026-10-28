@@ -20,4 +20,7 @@ export const stack = [
   { name: "Kafka", icon: "kafka" },
   { name: "AWS Lambda", icon: "lambda" },
   { name: "Unreal Engine", icon: "unreal" },
+  { name: "Claude", icon: "claude" },
+  { name: "Hermes Agent", icon: "hermes" },
+  { name: "9router", icon: "ninerouter" },
 ];
