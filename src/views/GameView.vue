@@ -21,8 +21,8 @@ const { gallery, open: openGallery, close: closeGallery, prev, next } = useGalle
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 const helpText = isTouch
-  ? "Tap to walk · tap a building to open it"
-  : "WASD / arrows or click to walk · press E at a door to open it";
+  ? "Tap to walk · tap a building or its name to open it"
+  : "WASD / arrows or click to walk · 1-5 or a name jumps to a place · E opens a door";
 
 let game = null;
 let disposed = false;

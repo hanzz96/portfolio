@@ -1,5 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { createHeldKeys } from "./input.js";
+import { createHeldKeys, placeIndexForKey } from "./input.js";
+
+describe("placeIndexForKey", () => {
+  it("maps the number row and numpad 1-5 to place indexes 0-4", () => {
+    expect(["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"].map(placeIndexForKey)).toEqual([0, 1, 2, 3, 4]);
+    expect(["Numpad1", "Numpad5"].map(placeIndexForKey)).toEqual([0, 4]);
+  });
+
+  it("ignores every other key", () => {
+    for (const code of ["Digit0", "Digit6", "KeyW", "ArrowUp", "Space", "Enter", ""]) {
+      expect(placeIndexForKey(code)).toBe(-1);
+    }
+  });
+});
 
 describe("createHeldKeys", () => {
   it("starts with no direction", () => {

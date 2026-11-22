@@ -1,5 +1,5 @@
 import kaplay from "kaplay";
-import { createHeldKeys } from "./input.js";
+import { createHeldKeys, placeIndexForKey } from "./input.js";
 import { findPath } from "./pathfinding.js";
 import { armUnlock } from "./unlock.js";
 import { HEROES, TILE, canStand, createWorld, isBlocked, poiAt } from "./world.js";
@@ -65,7 +65,10 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
   // whenever focus could move away, so a key released inside a panel can never stay stuck down.
   const keys = createHeldKeys();
   const onKeyDown = (event) => {
-    if (!paused && !event.metaKey && !event.ctrlKey && !event.altKey) keys.press(event.code);
+    if (paused || event.metaKey || event.ctrlKey || event.altKey) return;
+    keys.press(event.code);
+    const place = placeIndexForKey(event.code);
+    if (place >= 0 && !event.repeat) goToPlace?.(place);
   };
   const onKeyUp = (event) => keys.release(event.code);
   const releaseAllKeys = () => keys.clear();
@@ -80,6 +83,7 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let paused = false;
   let handleTap = null;
+  let goToPlace = null; // walk to the Nth place (the order of world.pois) and open it
 
   // Read the pointer straight from the DOM event: one path for mouse, touch and pen.
   canvas.addEventListener("pointerdown", (event) => {
@@ -114,8 +118,29 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
       overlay.appendChild(element);
       return element;
     };
-    const labels = world.pois.map(({ label, labelAnchor }) => ({ element: makeLabel("game-label", label), ...labelAnchor }));
-    const hintElement = makeLabel("game-label game-hint", window.matchMedia("(pointer: coarse)").matches ? "Tap" : "E / Tap");
+    // Place labels are buttons: tap or click one to walk there. Keyboard players use the 1-5 keys instead,
+    // so they stay out of the tab order (the overlay is hidden from assistive tech).
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    const labels = world.pois.map(({ label, labelAnchor }, index) => {
+      const element = document.createElement("button");
+      element.type = "button";
+      element.tabIndex = -1;
+      element.className = "game-label game-place";
+      if (!isTouch) {
+        const key = document.createElement("span");
+        key.className = "game-key";
+        key.textContent = String(index + 1);
+        element.append(key);
+      }
+      element.append(label);
+      element.addEventListener("click", () => {
+        goToPlace?.(index);
+        canvas.focus({ preventScroll: true });
+      });
+      overlay.appendChild(element);
+      return { element, ...labelAnchor };
+    });
+    const hintElement = makeLabel("game-label game-hint", isTouch ? "Tap" : "E / Tap");
     const place = (element, worldX, worldY) => {
       const { x, y } = k.toScreen(k.vec2(worldX, worldY));
       element.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
@@ -165,21 +190,29 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
     fit();
     k.onResize(fit);
 
+    // Walk to a tile; a point of interest opens once the player reaches its door.
+    function walkTo(goal, poi = null) {
+      sound("tap", { volume: 0.4 });
+      pending = poi;
+      path = findPath(grid, tileOf(), goal);
+      marker.pos = k.vec2(center(goal.col), center(goal.row));
+      markerLife = 0.5;
+
+      if (!path.length && pending) open(pending);
+    }
+
+    goToPlace = (index) => {
+      const poi = world.pois[index];
+      if (poi && !paused) walkTo(poi.entry, poi);
+    };
+
     handleTap = (screen) => {
       if (paused) return;
       const target = k.toWorld(screen);
       const col = Math.floor(target.x / TILE);
       const row = Math.floor(target.y / TILE);
       const poi = poiAt(world, col, row);
-      const goal = poi ? poi.entry : { col, row };
-
-      sound("tap", { volume: 0.4 });
-      pending = poi ?? null;
-      path = findPath(grid, tileOf(), goal);
-      marker.pos = k.vec2(center(goal.col), center(goal.row));
-      markerLife = 0.5;
-
-      if (!path.length && pending) open(pending);
+      walkTo(poi ? poi.entry : { col, row }, poi ?? null);
     };
 
     k.onKeyPress(["e", "enter", "space"], () => {

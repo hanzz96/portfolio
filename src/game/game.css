@@ -151,6 +151,36 @@ html.game-active body {
   left: 16px;
 }
 
+/* Place labels double as buttons that walk there. */
+.game-place {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.game-place:hover,
+.game-place:focus-visible {
+  color: #fff;
+}
+
+.game-key {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35em;
+  padding: 2px 0;
+  border: 2px solid var(--hud-edge);
+  background: var(--hud-bg);
+  color: var(--hud-edge);
+  font-size: 0.65em;
+  text-shadow: none;
+}
+
 /* Narrow screens: icons only, labels stay available to screen readers. */
 @media (max-width: 520px) {
   .hud-button {
