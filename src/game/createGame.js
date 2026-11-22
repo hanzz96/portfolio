@@ -4,8 +4,8 @@ import { findPath } from "./pathfinding.js";
 import { armUnlock } from "./unlock.js";
 import { HEROES, TILE, canStand, createWorld, isBlocked, poiAt } from "./world.js";
 
-const SPEED = 64; // pixels per second
-const STRIDE = 14; // pixels walked per footstep sound
+const SPEED = 128; // pixels per second
+const STRIDE = 28; // pixels walked per footstep sound (scales with SPEED to keep the footstep rhythm)
 const SFX = ["step-1", "step-2", "step-3", "tap", "open", "close"];
 const SHEET = { sliceX: 12, sliceY: 11 };
 const center = (index) => (index + 0.5) * TILE;
@@ -299,6 +299,10 @@ export function createGame({ root, overlay, baseUrl, onOpen }) {
   canvas.focus({ preventScroll: true });
 
   return {
+    places: createWorld().pois.map(({ id, label }) => ({ id, label })),
+    walkTo(index) {
+      goToPlace?.(index);
+    },
     setPaused(value) {
       const wasPaused = paused;
       paused = value;

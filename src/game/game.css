@@ -13,14 +13,15 @@ html.game-active body {
   touch-action: none;
 }
 
+/* The map sits below the section bar so the bar never hides a label. */
 .game-host {
   position: absolute;
-  inset: 0;
+  inset: var(--nav-height) 0 0;
 }
 
 .game-overlay {
   position: absolute;
-  inset: 0;
+  inset: var(--nav-height) 0 0;
   overflow: hidden;
   pointer-events: none;
 }
@@ -73,7 +74,7 @@ html.game-active body {
 
 .game-help {
   position: fixed;
-  top: calc(12px + env(safe-area-inset-top));
+  top: calc(var(--nav-height) + 12px);
   left: 50%;
   z-index: 50;
   max-width: calc(100% - 32px);
@@ -99,6 +100,67 @@ html.game-active body {
   --hud-bg: #f6e3b4;
   --hud-bg-active: #bfe58f;
   --hud-edge: #3b2a22;
+  --nav-height: calc(56px + env(safe-area-inset-top));
+}
+
+.game-nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 60;
+  box-sizing: border-box;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: env(safe-area-inset-top) 8px 0;
+  border-bottom: 3px solid var(--hud-edge);
+  background: var(--hud-bg);
+}
+
+.game-nav button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 2px solid var(--hud-edge);
+  background: #fff0c8;
+  box-shadow: 2px 2px 0 var(--hud-edge);
+  color: var(--hud-edge);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.game-nav button:hover {
+  background: var(--hud-bg-active);
+}
+
+.game-nav button:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+.game-nav button:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  .game-nav {
+    gap: 4px;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  .game-nav button {
+    padding: 0 7px;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+  }
 }
 
 .hud-button {
