@@ -4,6 +4,12 @@ const UP = ["ArrowUp", "KeyW"];
 const DOWN = ["ArrowDown", "KeyS"];
 const MOVEMENT_KEYS = new Set([...LEFT, ...RIGHT, ...UP, ...DOWN]);
 
+/** Number keys 1-5 (row or numpad) jump to a place: returns its 0-based index, or -1 for any other key. */
+export function placeIndexForKey(code) {
+  const match = /^(?:Digit|Numpad)([1-5])$/.exec(code);
+  return match ? Number(match[1]) - 1 : -1;
+}
+
 /**
  * Tracks which movement keys are held. Kaplay only hears keyboard events on the canvas, so a key
  * released while focus was elsewhere (for example inside a panel) would stay "down" forever.

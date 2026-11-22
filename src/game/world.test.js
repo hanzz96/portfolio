@@ -53,6 +53,15 @@ describe("points of interest", () => {
     expect(end).toEqual(poi.entry);
   });
 
+  it("lets the player walk from any door to any other door", () => {
+    for (const from of world.pois) {
+      for (const to of world.pois) {
+        const path = findPath(grid, from.entry, to.entry);
+        expect(path.at(-1) ?? from.entry).toEqual(to.entry);
+      }
+    }
+  });
+
   it.each(expectedIds)("%s footprint is solid and never overlaps another point of interest", (id) => {
     const poi = world.pois.find((item) => item.id === id);
     expect(poi.cells.length).toBeGreaterThan(0);

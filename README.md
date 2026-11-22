@@ -10,6 +10,7 @@ The original scrolling page is still available at `?view=classic` (or the **Clas
 | Input | Action |
 | --- | --- |
 | Tap / click | Walk to that spot. Tap a building or NPC to walk to its door and open it. |
+| Place name (the labels) or keys 1-5 | Auto-walk to About, Experience, Skills, Projects or Contact and open it. |
 | WASD / arrow keys | Walk. |
 | E / Enter / Space | Open the section at the door you are standing on. |
 | Esc | Close the open panel. |

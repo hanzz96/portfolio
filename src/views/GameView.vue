@@ -17,12 +17,13 @@ const overlay = ref(null);
 const activePanel = ref(null);
 const showHelp = ref(true);
 const muted = ref(loadMuted());
+const places = ref([]);
 const { gallery, open: openGallery, close: closeGallery, prev, next } = useGallery();
 
 const isTouch = window.matchMedia("(pointer: coarse)").matches;
 const helpText = isTouch
-  ? "Tap to walk · tap a building to open it"
-  : "WASD / arrows or click to walk · press E at a door to open it";
+  ? "Tap to walk · tap a building or its name to open it"
+  : "WASD / arrows or click to walk · 1-5 or a name jumps to a place · E opens a door";
 
 let game = null;
 let disposed = false;
@@ -45,6 +46,7 @@ onMounted(async () => {
       },
     });
     game.setMuted(muted.value);
+    places.value = game.places;
   } catch (error) {
     console.error("Game failed to start, falling back to the classic view.", error);
     emit("switch-view", "classic");
@@ -64,6 +66,12 @@ function toggleSound() {
   game?.setMuted(muted.value);
 }
 
+function goTo(index) {
+  showHelp.value = false;
+  game?.walkTo(index);
+  host.value?.querySelector("canvas")?.focus({ preventScroll: true });
+}
+
 function closePanel() {
   activePanel.value = null;
   game?.setPaused(false);
@@ -76,6 +84,12 @@ function onOpenGallery(company, items) {
 
 <template>
   <div class="game-view">
+    <nav v-if="places.length" class="game-nav" aria-label="Walk to a section">
+      <button v-for="(place, index) in places" :key="place.id" type="button" @click="goTo(index)">
+        {{ place.label }}
+      </button>
+    </nav>
+
     <div ref="host" class="game-host" role="img" aria-label="Interactive 2D town. Each building opens a section of the portfolio." />
     <div ref="overlay" class="game-overlay" aria-hidden="true" />
 
